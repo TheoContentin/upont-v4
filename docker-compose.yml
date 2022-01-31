@@ -12,6 +12,7 @@ services:
       context: back
       dockerfile: Dockerfile
       target: development
+    stdin_open: true
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./back:/src
@@ -20,6 +21,7 @@ services:
       - "$BACK_PORT:8000"
     depends_on:
       - db
+      - selenium-hub
     links:
       - db
     environment:
@@ -33,3 +35,20 @@ services:
       DEFAULT_FROM_EMAIL: $DEFAULT_FROM_EMAIL
       SECRET_KEY: $SECRET_KEY
       DEBUG: $DEBUG
+  selenium-hub:
+    image: selenium/hub:4.1.0-20211209
+    container_name: selenium-hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+  firefox:
+    image: selenium/node-firefox:4.1.0-20211209
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+      - SE_NODE_GRID_URL=http://localhost:4444

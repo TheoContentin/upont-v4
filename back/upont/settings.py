@@ -29,13 +29,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG", default=False)
 
-ALLOWED_HOSTS = [
-    "upont.enpc.org",
-    "upont-dev.enpc.org",
-    "localhost",
-    "127.0.0.1",
-    "back",
-]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = [
+        "upont.enpc.org",
+        "upont-dev.enpc.org",
+        "localhost",
+        "127.0.0.1",
+        "back",
+    ]
 
 if DEBUG:
     # SECURITY WARNING: keep the secret key used in production secret!
@@ -63,6 +66,7 @@ INSTALLED_APPS = [
     "tellme",
     "django.contrib.postgres",
     "django_cas_ng",
+    "selenium",
 ]
 
 MIDDLEWARE = [
